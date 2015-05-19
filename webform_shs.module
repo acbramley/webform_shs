@@ -12,6 +12,7 @@ function webform_shs_webform_component_info() {
     'label' => t('Simple hierarchical select'),
     'description' => t('Hierarchical select list.'),
     'features' => array(
+      'private' => FALSE,
     ),
     'file' => 'components/shs.inc',
   );
