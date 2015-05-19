@@ -1,0 +1,7 @@
+name = Webform Simple Hierarchical Select 
+description = Integrates Simple Hierarchical Select module with Webform.
+package = Webform
+core = 7.x
+
+dependencies[] = webform
+dependencies[] = shs
