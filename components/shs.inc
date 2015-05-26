@@ -144,26 +144,8 @@ function _webform_display_shs($component, $value, $format = 'html') {
     '#field_suffix' => '',
   );
 
-  $value = (array) $value;
-
-  foreach ($value as $val) {
-    if (strpos($val, '+') !== FALSE) {
-      // In format of '52+62+64,63'
-      $val_parts = explode('+', $val);
-      $children = explode(',', end($val_parts));
-      foreach ($children as $child) {
-        $term = taxonomy_term_load($child);
-        $labels[] = $term ? _webform_shs_get_label($child) : $child;
-      }
-    }
-    else {
-      $term = taxonomy_term_load($val);
-      $labels[] = $term ? _webform_shs_get_label($val) : $val;
-    }
-  }
-
   $newline = $format == 'html' ? '<br/>' : "\n";
-  foreach ($labels as $label) {
+  foreach (_webform_shs_get_labels_for_output($value) as $label) {
     $display['#value'] .= check_plain($label) . $newline;
   }
 
@@ -175,28 +157,8 @@ function _webform_display_shs($component, $value, $format = 'html') {
  */
 function _webform_table_shs($component, $value) {
   $output = '';
-  $value = (array) $value;
-  $labels = array();
 
-  foreach ($value as $item => $val) {
-    if ($val !== '') {
-      if (strpos($val, '+') !== FALSE) {
-        // In format of '52+62+64,63'
-        $val_parts = explode('+', $val);
-        $children = explode(',', end($val_parts));
-        foreach ($children as $child) {
-          $term = taxonomy_term_load($child);
-          $labels[] = $term ? _webform_shs_get_label($child) : $child;
-        }
-      }
-      else {
-        $term = taxonomy_term_load($val);
-        $labels[] = $term ? _webform_shs_get_label($val) : $val;
-      }
-    }
-  }
-
-  foreach ($labels as $label) {
+  foreach (_webform_shs_get_labels_for_output($value) as $label) {
     $output .= check_plain($label) . '<br/>';
   }
 
