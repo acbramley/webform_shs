@@ -140,6 +140,8 @@ function _webform_display_shs($component, $value, $format = 'html') {
     '#component' => $component,
     '#format' => $format,
     '#value' => '',
+    '#field_prefix' => '',
+    '#field_suffix' => '',
   );
 
   $value = (array) $value;
