@@ -82,7 +82,9 @@ function _webform_render_shs($component, $value = NULL) {
   // Generate a random hash to avoid merging of settings by drupal_add_js.
   // This is necessary until http://drupal.org/node/208611 lands for D7.
   $js_hash = _shs_create_hash();
-  $identifier = 'submitted[' . $component['form_key'] . ']';
+  $node = node_load($component['nid']);
+  $component_parents = webform_component_parent_keys($node, $component);
+  $identifier = 'submitted[' . implode('][', $component_parents) . ']';
   // Create settings needed for our js magic.
   $settings_js = array(
     'shs' => array(
