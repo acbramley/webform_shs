@@ -115,7 +115,7 @@ function _webform_render_shs($component, $value = NULL) {
     '#weight' => $component['weight'],
     '#description' => $component['extra']['description'],
     '#default_value' => $component['value'],
-    '#prefix' => '<div class="form-item webform-component webform-component--' . str_replace('_', '-', $component['form_key']) . ' webform-component-' . $component['type'] . '" id="webform-component-' . $component['form_key'] . '">',
+    '#prefix' => '<div class="form-item webform-component webform-component--' . str_replace('_', '-', $component['form_key']) . ' webform-component-' . $component['type'] . ' ' . $component['extra']['wrapper_classes'] . '" id="webform-component-' . $component['form_key'] . '">',
     '#suffix' => '</div>',
     '#attributes' => array(
       'class' => array('element-invisible', 'shs-enabled'),
