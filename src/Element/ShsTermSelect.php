@@ -57,21 +57,23 @@ class ShsTermSelect extends Select {
       'force_deepest' => $element['#force_deepest'],
       'addNewLabel' => t('Add another item'),
     ];
+
     /** @var \Drupal\shs\WidgetDefaults $widget_defaults */
     $widget_defaults = \Drupal::service('shs.widget_defaults');
-    // Define default parents for the widget.
-    $parents = $widget_defaults->getInitialParentDefaults($settings['anyValue']);
-    if ($default_value) {
-      $parents = $widget_defaults->getParentDefaults($default_value, $settings['anyValue'], 'taxonomy_term');
-    }
-
     $bundle = $element['#vocabulary'];
+    $cardinality = $element['#multiple'];
+
+    // Define default parents for the widget.
+    $parents = $widget_defaults->getInitialParentDefaults($settings['anyValue'], $cardinality);
+    if ($default_value) {
+      $parents = $widget_defaults->getParentDefaults($default_value, $settings['anyValue'], 'taxonomy_term', $cardinality);
+    }
 
     $settings_shs = [
       'settings' => $settings,
       'bundle' => $bundle,
       'baseUrl' => Url::fromUserInput('/shs-term-data')->setAbsolute()->toString(),
-      'cardinality' => $element['#webform_multiple'] ? $element['#webform_multiple'] : 1,
+      'cardinality' => $cardinality,
       'parents' => $parents,
       'defaultValue' => $default_value,
     ];
@@ -107,16 +109,36 @@ class ShsTermSelect extends Select {
       return;
     }
 
+    if (!empty($element['#force_deepest_error'])) {
+      $message = $element['#force_deepest_error'];
+    }
+    else {
+      $message = t('You need to select a term from the deepest level in field @name.', ['@name' => $element['#title']]);
+    }
+
     $value = $form_state->getValue($element['#name']);
-    if ((($element['#shs']['settings']['anyValue'] === $value) && count($element['#options']) > 1) || shs_term_has_children($value)) {
-      if (!empty($element['#force_deepest_error'])) {
-        $message = $element['#force_deepest_error'];
+    if (!is_array($value)) {
+      $value = [$value];
+    }
+
+    foreach ($value as $element_value) {
+      // If nothing was selected.
+      if (($element['#shs']['settings']['anyValue'] === $element_value)) {
+        // Skip this value row and check the next one.
+        if (!$element['#required']) {
+          continue;
+        }
+        // Ensure there were options to select from before setting the error.
+        elseif (count($element['#options']) > 1) {
+          $form_state->setError($element, $message);
+          return;
+        }
       }
-      else {
-        $message = t('You need to select a term from the deepest level in field @name.', ['@name' => $element['#title']]);
+      elseif (shs_term_has_children($element_value)) {
+        $form_state->setError($element, $message);
+        return;
       }
-      $form_state->setError($element, $message);
-      return;
+
     }
   }
 
