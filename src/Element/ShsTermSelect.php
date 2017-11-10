@@ -72,7 +72,7 @@ class ShsTermSelect extends Select {
     $settings_shs = [
       'settings' => $settings,
       'bundle' => $bundle,
-      'baseUrl' => Url::fromUserInput('/shs-term-data')->setAbsolute()->toString(),
+      'baseUrl' => 'shs-term-data',
       'cardinality' => $cardinality,
       'parents' => $parents,
       'defaultValue' => $default_value,
