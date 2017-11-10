@@ -61,7 +61,7 @@ class ShsTermSelect extends Select {
     /** @var \Drupal\shs\WidgetDefaults $widget_defaults */
     $widget_defaults = \Drupal::service('shs.widget_defaults');
     $bundle = $element['#vocabulary'];
-    $cardinality = $element['#multiple'];
+    $cardinality = $element['#multiple'] ? -1 : 1;
 
     // Define default parents for the widget.
     $parents = $widget_defaults->getInitialParentDefaults($settings['anyValue'], $cardinality);
